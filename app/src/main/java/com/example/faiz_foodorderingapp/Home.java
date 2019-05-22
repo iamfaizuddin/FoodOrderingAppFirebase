@@ -85,7 +85,7 @@ public class Home extends AppCompatActivity
     public void loadOrders(){
         adapter = new FirebaseRecyclerAdapter<Order, MenuViewHolder>(Order.class,R.layout.order_item,MenuViewHolder.class,category) {
             @Override
-            protected void populateViewHolder(MenuViewHolder viewHolder, Order model, int position) {
+            protected void populateViewHolder(MenuViewHolder viewHolder, final Order model, final int position) {
                 viewHolder.orderid.setText("OrderId : " + model.getOrderId());
                 viewHolder.orderdate.setText("OrderDate : " + model.getOrderDueDate());
                 viewHolder.ordername.setText("Name : " + model.getCustomerName());
@@ -104,8 +104,13 @@ public class Home extends AppCompatActivity
                 viewHolder.orderdelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Intent cartIntent = new Intent(Home.this,AddOrder.class);
-//                        startActivity(cartIntent);
+                        DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference()
+                                .child("Orders").child(String.valueOf(model.getOrderId()));
+                        mPostReference.removeValue();
+
+                        recycler_menu.removeViewAt(position);
+                        adapter.notifyItemRemoved(position);
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
