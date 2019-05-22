@@ -108,8 +108,6 @@ public class Home extends AppCompatActivity
                                 .child("Orders").child(String.valueOf(model.getOrderId()));
                         mPostReference.removeValue();
 
-                        recycler_menu.removeViewAt(position);
-                        adapter.notifyItemRemoved(position);
                         adapter.notifyDataSetChanged();
                     }
                 });
