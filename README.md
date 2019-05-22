@@ -15,11 +15,6 @@ In this project i have used :
   9) Shared Preferences 
   
 The project contains :
-
-  1) Sign Up 
-  2) Login  
-  3) List of orders 
-  4) Creating an Order 
   
   1) Sign Up :
      For doing signup a user has to enter his Name, Phone number and password. After authentication the user will be              redirected to Orders Screen where he will see all the list of orders. The user will be authenticated using firebase          realtime database 'User'. If the phone number already exists, then the user cannot create another account. 
