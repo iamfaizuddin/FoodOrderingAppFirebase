@@ -24,6 +24,7 @@ import java.util.*;
 import android.app.*;
 import android.widget.*;
 import java.text.SimpleDateFormat;
+import com.google.firebase.database.Query;
 
 public class AddOrder extends AppCompatActivity{
     MaterialEditText edtorderdueDate, edtcustmerName, edtcustomerphone, edtcustomeraddress,edttotalAmount,edtcity,edtcountry;
@@ -32,6 +33,7 @@ public class AddOrder extends AppCompatActivity{
     private static final int REQUEST_CODE_PERMISSION = 2;
     String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     final Calendar myCalendar = Calendar.getInstance();
+    int orderid = 0;
     // GPSTracker class
     GPSTracker gps;
     @Override
@@ -115,6 +117,9 @@ public class AddOrder extends AppCompatActivity{
         btnAddOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                city = "Hyderabad";
+                country = "India";
+
                 if(edtorderdueDate.getText().toString().length() > 0 && edtcustmerName.getText().toString().length() > 0
                         && edtcustomerphone.getText().toString().length() > 5 && edtcustomeraddress.getText().toString().length() > 0
                         && edttotalAmount.getText().toString().length() > 0 && city.length() > 0 && country.length() > 0)
@@ -123,18 +128,28 @@ public class AddOrder extends AppCompatActivity{
                     mDialog.setMessage("Please Wait...");
                     mDialog.show();
 
+                    // Getting the last orderId
+                    DatabaseReference orderstable = database.getReference().child("Orders");;
+                    Query lastQuery = orderstable.orderByKey().limitToLast(1);
+                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot data : dataSnapshot.getChildren())
+                            {
+                                String key = data.getKey();
+                                orderid = Integer.parseInt(key);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            //Handle possible errors.
+                        }
+                    });
+
                     table_user.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            // getting the last orderid
-                            int orderid = 0;
-
-                            for (DataSnapshot objSnapshot: dataSnapshot.getChildren()) {
-                                if(objSnapshot.getKey().length() > 0){
-                                    orderid += Integer.parseInt(objSnapshot.getKey());
-                                    break;
-                                }
-                            }
                             // Adding +1 to existing orderid
                             orderid = orderid + 1;
 
@@ -187,11 +202,11 @@ public class AddOrder extends AppCompatActivity{
                 edtcity.setText(city);
                 edtcountry.setText(country);
             }else{
-                Toast.makeText(AddOrder.this, "faled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddOrder.this, "failed", Toast.LENGTH_SHORT).show();
                 gps.showSettingsAlert();
             }
         } catch (Exception e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }
