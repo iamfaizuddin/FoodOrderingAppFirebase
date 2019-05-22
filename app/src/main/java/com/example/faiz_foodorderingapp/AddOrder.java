@@ -8,6 +8,8 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.faiz_foodorderingapp.Common.Common;
 import com.example.faiz_foodorderingapp.Model.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,6 +88,11 @@ public class AddOrder extends AppCompatActivity{
         // getting current city and country default
         getcityandcountry();
 
+        //Checking for updating data
+        if(Common.update != 0){
+            updateorderdetails();
+        }
+
         //Click event for city
         edtcity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +126,6 @@ public class AddOrder extends AppCompatActivity{
             public void onClick(View v) {
                 city = "Hyderabad";
                 country = "India";
-
                 if(edtorderdueDate.getText().toString().length() > 0 && edtcustmerName.getText().toString().length() > 0
                         && edtcustomerphone.getText().toString().length() > 5 && edtcustomeraddress.getText().toString().length() > 0
                         && edttotalAmount.getText().toString().length() > 0 && city.length() > 0 && country.length() > 0)
@@ -128,51 +134,77 @@ public class AddOrder extends AppCompatActivity{
                     mDialog.setMessage("Please Wait...");
                     mDialog.show();
 
-                    // Getting the last orderId
-                    DatabaseReference orderstable = database.getReference().child("Orders");;
-                    Query lastQuery = orderstable.orderByKey().limitToLast(1);
-                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for(DataSnapshot data : dataSnapshot.getChildren())
-                            {
-                                String key = data.getKey();
-                                orderid = Integer.parseInt(key);
+                    if(Common.update != 0){
+                        table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //Updating order to database
+                                Order order = new Order(Common.orderdetails.getOrderId(),edtorderdueDate.getText().toString(), edtcustmerName.getText().toString(),
+                                        edtcustomeraddress.getText().toString(),edtcustomerphone.getText().toString()
+                                        ,edttotalAmount.getText().toString(),city, country);
+                                table_user.child(String.valueOf(Common.orderdetails.getOrderId())).setValue(order);
+
+                                Toast.makeText(AddOrder.this, "Order updated successfully !", Toast.LENGTH_SHORT).show();
+
+                                // Redirecting to Orders (Home)
+                                mDialog.dismiss();
+                                Intent orderIntent = new Intent(AddOrder.this, Home.class);
+                                startActivity(orderIntent);
+                                finish();
+
                             }
-                        }
+                            @Override
+                            public void onCancelled (DatabaseError databaseError){
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            //Handle possible errors.
-                        }
-                    });
+                            }
+                        });
+                    }else{
+                        // Getting the last orderId
+                        DatabaseReference orderstable = database.getReference().child("Orders");;
+                        Query lastQuery = orderstable.orderByKey().limitToLast(1);
+                        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot data : dataSnapshot.getChildren())
+                                {
+                                    String key = data.getKey();
+                                    orderid = Integer.parseInt(key);
+                                }
+                            }
 
-                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            // Adding +1 to existing orderid
-                            orderid = orderid + 1;
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                //Handle possible errors.
+                            }
+                        });
 
-                            //adding order to database
-                            Order order = new Order(orderid,edtorderdueDate.getText().toString(), edtcustmerName.getText().toString(),
-                                    edtcustomeraddress.getText().toString(),edtcustomerphone.getText().toString()
-                            ,edttotalAmount.getText().toString(),city, country);
-                            table_user.child(String.valueOf(orderid)).setValue(order);
+                        table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // Adding +1 to existing orderid
+                                orderid = orderid + 1;
 
-                            Toast.makeText(AddOrder.this, "Order added successfully !", Toast.LENGTH_SHORT).show();
+                                //adding order to database
+                                Order order = new Order(orderid,edtorderdueDate.getText().toString(), edtcustmerName.getText().toString(),
+                                        edtcustomeraddress.getText().toString(),edtcustomerphone.getText().toString()
+                                        ,edttotalAmount.getText().toString(),city, country);
+                                table_user.child(String.valueOf(orderid)).setValue(order);
 
-                            // Redirecting to Orders (Home)
-                            mDialog.dismiss();
-                            Intent orderIntent = new Intent(AddOrder.this, Home.class);
-                            startActivity(orderIntent);
-                            finish();
+                                Toast.makeText(AddOrder.this, "Order added successfully !", Toast.LENGTH_SHORT).show();
 
-                        }
-                        @Override
-                        public void onCancelled (DatabaseError databaseError){
+                                // Redirecting to Orders (Home)
+                                mDialog.dismiss();
+                                Intent orderIntent = new Intent(AddOrder.this, Home.class);
+                                startActivity(orderIntent);
+                                finish();
 
-                        }
-                    });
+                            }
+                            @Override
+                            public void onCancelled (DatabaseError databaseError){
+
+                            }
+                        });
+                    }
                 }else{
                     Toast.makeText(AddOrder.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                 }
@@ -208,5 +240,18 @@ public class AddOrder extends AppCompatActivity{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateorderdetails(){
+        edtcity.setText(Common.orderdetails.getCity());
+        edtcountry.setText(Common.orderdetails.getCountry());
+        edtcustmerName.setText(Common.orderdetails.getCustomerName());
+        edtcustomeraddress.setText(Common.orderdetails.getCustomerAddress());
+        edtorderdueDate.setText(Common.orderdetails.getOrderDueDate());
+        edttotalAmount.setText(Common.orderdetails.getOrderTotal());
+        edtcustomerphone.setText(Common.orderdetails.getCustomerPhone());
+        btnAddOrder.setText("Update Order");
+        city = Common.orderdetails.getCity();
+        country = Common.orderdetails.getCountry();
     }
 }
