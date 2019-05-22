@@ -96,8 +96,10 @@ public class Home extends AppCompatActivity
                 viewHolder.orderedit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Intent cartIntent = new Intent(Home.this,AddOrder.class);
-//                        startActivity(cartIntent);
+                        Intent cartIntent = new Intent(Home.this,AddOrder.class);
+                        Common.orderdetails = model;
+                        Common.update = 1;
+                        startActivity(cartIntent);
                     }
                 });
 
