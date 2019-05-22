@@ -124,8 +124,6 @@ public class AddOrder extends AppCompatActivity{
         btnAddOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                city = "Hyderabad";
-                country = "India";
                 if(edtorderdueDate.getText().toString().length() > 0 && edtcustmerName.getText().toString().length() > 0
                         && edtcustomerphone.getText().toString().length() > 5 && edtcustomeraddress.getText().toString().length() > 0
                         && edttotalAmount.getText().toString().length() > 0 && city.length() > 0 && country.length() > 0)
