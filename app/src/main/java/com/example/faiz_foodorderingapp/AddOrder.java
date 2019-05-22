@@ -34,7 +34,6 @@ public class AddOrder extends AppCompatActivity{
     final Calendar myCalendar = Calendar.getInstance();
     // GPSTracker class
     GPSTracker gps;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,7 @@ public class AddOrder extends AppCompatActivity{
         btnAddOrder = findViewById(R.id.btnaddOrder);
 
         // Inititalizing Firebase Database for orders
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference table_user = database.getReference("Orders");
 
         // Setting Up Location
@@ -123,7 +122,8 @@ public class AddOrder extends AppCompatActivity{
                     final ProgressDialog mDialog = new ProgressDialog(AddOrder.this);
                     mDialog.setMessage("Please Wait...");
                     mDialog.show();
-                    table_user.addValueEventListener(new ValueEventListener() {
+
+                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // getting the last orderid
@@ -151,6 +151,7 @@ public class AddOrder extends AppCompatActivity{
                             Intent orderIntent = new Intent(AddOrder.this, Home.class);
                             startActivity(orderIntent);
                             finish();
+
                         }
                         @Override
                         public void onCancelled (DatabaseError databaseError){
