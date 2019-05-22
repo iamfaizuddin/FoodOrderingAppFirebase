@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "364557252712",
+    "firebase_url": "https://faiz-foodorderingapp.firebaseio.com",
+    "project_id": "faiz-foodorderingapp",
+    "storage_bucket": "faiz-foodorderingapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364557252712:android:66d13a0fc57cdb47",
+        "android_client_info": {
+          "package_name": "com.example.faiz_foodorderingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364557252712-gfto8qoh7e4qlr9ptuibvm6uflonaj6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.faiz_foodorderingapp",
+            "certificate_hash": "a7c7a5023339a81b7d64e9cf544c8cfce96191d1"
+          }
+        },
+        {
+          "client_id": "364557252712-4lq6ichq9vpvsgan0ngejd1bnnsoskjj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyO2IYIwzXSE9-n8IHtta6tRgiahGTbOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364557252712-4lq6ichq9vpvsgan0ngejd1bnnsoskjj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
